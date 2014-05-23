@@ -35,7 +35,7 @@ public class SendThread extends Thread {
 			List<NameValuePair> params = new ArrayList<NameValuePair>(2);
 			params.add(new BasicNameValuePair("patient_id", Integer.toString(m_icd.getPatientId())));
 			params.add(new BasicNameValuePair("heartrate", Float.toString(m_icd.getCurrentHeartrate())));
-			System.out.println(Float.toString(m_icd.getCurrentHeartrate()));
+
 			try {
 				m_httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 			} catch (UnsupportedEncodingException e1) {
