@@ -7,7 +7,9 @@ public class ICD {
 	private Heart m_heart;
 	private MonitorThread m_monitorThread;
 	private SendThread m_sendThread;
+	private StimulateThread m_stimulateThread;
 	private int m_patientId;
+	private boolean m_detectedP, m_detectedQRS;
 	
 	public ICD(Heart heart) {
 		m_dead = false;
@@ -18,10 +20,14 @@ public class ICD {
 		
 		m_monitorThread = new MonitorThread(this);
 		m_sendThread = new SendThread(this, "http://130.56.248.71/elec5614/icdm/web/post/heartrate/");
+		m_stimulateThread = new StimulateThread(this);
+		
+		
 		
 		m_monitorThread.start();
+		m_stimulateThread.start();
 		
-		m_sendThread.start();
+//		m_sendThread.start();
 		
 		
 	}
@@ -58,6 +64,22 @@ public class ICD {
 		}
 	}
 	
+	public void setPFlag(boolean state){
+		m_detectedP = state;
+	}
+	
+	public void setQRSFlag(boolean state){
+		m_detectedQRS = state;
+	}
+	
+	public boolean getPFlag(){
+		return m_detectedP;
+	}
+	
+	public boolean getQRSFlag(){
+		return m_detectedQRS;
+	}
+	
 	public void setDeadFlag(boolean state) {
 		m_dead = state;
 	}
@@ -75,4 +97,5 @@ public class ICD {
 		m_fast = false;
 		m_slow = false;
 	}
+	
 }

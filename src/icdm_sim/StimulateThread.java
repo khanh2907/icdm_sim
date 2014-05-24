@@ -13,10 +13,16 @@ public class StimulateThread extends Thread {
 	
 	public void run() {
 		while(true) {
-			if (m_icd.getFlag(FAST) || m_icd.getFlag(SLOW) || m_icd.getFlag(DEAD)) {
-				System.out.println("StimulateThread: Emergency - stimulating heart.");
-				m_icd.getHeart().setHeartrate(60);
-				m_icd.resetFlags();
+//			if (m_icd.getFlag(FAST) || m_icd.getFlag(SLOW) || m_icd.getFlag(DEAD)) {
+//				System.out.println("StimulateThread: Emergency - stimulating heart.");
+//				m_icd.getHeart().setHeartrate(60);
+//				m_icd.resetFlags();
+//			}
+//			doesn't poll properly without print
+			System.out.print("");
+			if(!m_icd.getQRSFlag()){
+				System.out.println("Ventricle pacing signal sent");
+				m_icd.setQRSFlag(true);
 			}
 		}
 	}
