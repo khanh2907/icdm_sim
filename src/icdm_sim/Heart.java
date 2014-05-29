@@ -11,6 +11,7 @@ public class Heart{
 	public boolean m_heartDisease;
 	public boolean m_pWave;
 	public boolean m_qrsWave;
+	public boolean m_isVentricularFibrillation;
 	
 	private float m_heartrate;
 	
@@ -29,6 +30,7 @@ public class Heart{
 		m_smokes = smokes;
 		m_drinksAlcohol = drinksAlcohol;
 		m_heartDisease = heartDisease;
+		m_isVentricularFibrillation = false;
 		
 		m_heartrate = 60;
 		
@@ -36,6 +38,10 @@ public class Heart{
 		m_heartbeatThread.start();
 		
 		
+	}
+	
+	public void setFib(boolean state){
+		m_isVentricularFibrillation = state;
 	}
 		
 	public float setHeartrate(float newHeartrate) {
@@ -67,5 +73,8 @@ public class Heart{
 		return m_qrsWave;
 	}
 	
+	public boolean getFib(){
+		return m_isVentricularFibrillation;
+	}
 	
 }
