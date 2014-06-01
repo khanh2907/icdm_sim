@@ -15,18 +15,19 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 public class SendThread extends Thread {
-	
+
 	private ICD m_icd;
 	private HttpClient m_httpclient; 
 	private HttpPost m_httppost;
 	private String m_host;
-	
+	float currentHeartrate;
+
 	public SendThread(ICD icd, String host) {
 		m_icd = icd;
 		m_host = host;
 	}
-	
-	
+
+
 	public void run() {
 		while(true) {
 			m_httpclient = HttpClients.createDefault();
@@ -34,7 +35,14 @@ public class SendThread extends Thread {
 			// Request parameters and other properties.
 			List<NameValuePair> params = new ArrayList<NameValuePair>(2);
 			params.add(new BasicNameValuePair("patient_id", Integer.toString(m_icd.getPatientId())));
-			params.add(new BasicNameValuePair("heartrate", Float.toString(m_icd.getCurrentHeartrate())));
+			if(m_icd.getHeart().isDead()){
+				currentHeartrate = 0;
+			}
+
+			else 
+				currentHeartrate = m_icd.getCurrentHeartrate();
+
+			params.add(new BasicNameValuePair("heartrate", Float.toString(currentHeartrate)));
 
 			try {
 				m_httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -53,7 +61,7 @@ public class SendThread extends Thread {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			try {
 				System.out.println("SendThread: Sleeping for 1 second.");
 				Thread.sleep(1000);
@@ -63,5 +71,5 @@ public class SendThread extends Thread {
 			}
 		}
 	}
-	
+
 }

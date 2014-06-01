@@ -21,9 +21,6 @@ import org.apache.http.message.BasicNameValuePair;
 public class StimulateThread extends Thread {
 
 	private ICD m_icd;
-	private String DEAD = "dead";
-	private String FAST = "fast";
-	private String SLOW = "slow";
 	private Heart m_heart;
 	private Random chance;
 	
@@ -78,7 +75,7 @@ public class StimulateThread extends Thread {
 				}
 				System.out.println("Discharge");
 
-				if(chance.nextFloat() > 0.3){		
+				if(chance.nextFloat() < 0.3){		
 					try{
 						m_heart.getLockVentricFib().lock();				
 						m_icd.getHeart().setFib(false);
@@ -96,9 +93,10 @@ public class StimulateThread extends Thread {
 				}
 				else 
 					System.out.println("Defibrillation failed");
+			
 			}
 
-			if(m_icd.getSlow()){
+			if(m_icd.getSlow() && !m_icd.getHeart().isDead()){
 				int defJobId = createNewJob("BRAD", "Bradycardia detected, heart pacing signal sent.");
 				System.out.println("Bradycardia detected, heart pacing signal sent");
 				m_icd.setSlowFlag(false);
@@ -112,7 +110,7 @@ public class StimulateThread extends Thread {
 
 			}
 
-			if(m_icd.getFast()){
+			if(m_icd.getFast() && !m_icd.getHeart().isDead()){
 				int defJobId = createNewJob("TACH", "Tachycardia detected, heart pacing signal sent");
 				System.out.println("Tachycardia detected, heart pacing signal sent");
 

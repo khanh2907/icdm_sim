@@ -15,7 +15,10 @@ public class MonitorThread extends Thread {
 			while (true) {
 				long startTime = System.currentTimeMillis();
 				float heartrate = m_icd.updateCurrentHeartrate(heart.getHeartrate());
-
+				
+				if (heart.isDead()){
+					m_icd.updateCurrentHeartrate(0);
+				}
 
 				try{
 					Thread.sleep(1);
