@@ -69,7 +69,7 @@ public class HeartbeatThread extends Thread {
 			}
 			//chance or cardiac arrest
 
-			if(random.nextFloat() < 0.3){
+			if(random.nextFloat() < m_chance/9){
 				System.out.println("Ventricular Fibrillation ");
 				try{
 					m_heart.getLockVentricFib().lock();
@@ -129,7 +129,7 @@ public class HeartbeatThread extends Thread {
 			//			System.out.println("QRS start");
 
 			//Chance that QRS won't happen
-			if(random.nextFloat()>m_chance)
+			if(random.nextFloat()>m_chance/4)
 				m_heart.setQRSWave(true);
 
 			try{
