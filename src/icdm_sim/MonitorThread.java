@@ -1,12 +1,9 @@
 package icdm_sim;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MonitorThread extends Thread {
 
 	ICD m_icd;
 	Heart heart;
-	private Timer t = new Timer(true);
 
 	public MonitorThread(ICD icd) {
 		m_icd = icd;
@@ -18,16 +15,30 @@ public class MonitorThread extends Thread {
 			while (true) {
 				long startTime = System.currentTimeMillis();
 				float heartrate = m_icd.updateCurrentHeartrate(heart.getHeartrate());
-				//seems to poll better with blank statements added in
+
 
 				try{
 					Thread.sleep(1);
 				} catch (InterruptedException e){
 					e.printStackTrace();
 				}
+				System.out.println(heartrate);
+				if(heartrate<60){
+					System.out.println("Bradycardia");
+					m_icd.setSlowFlag(true);
+				}
 
+				if(heartrate>100){
+					System.out.println("Tachycardia");
+					m_icd.setFastFlag(true);
+				}
 				while(System.currentTimeMillis() - startTime < (1/(heart.getHeartrate()/60)*1000)){
-					System.out.print("");
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if(heart.getPWave()){
 						m_icd.setPFlag(true);
 						System.out.println("P wave detected");
@@ -43,24 +54,34 @@ public class MonitorThread extends Thread {
 						while((System.currentTimeMillis()-startTime1)< 160){
 							//					System.out.println(heart.getQRSWave());
 							if(heart.getQRSWave()){
-								m_icd.setQRSFlag(true);		
 								System.out.println("QRS wave detected");
+								try{
+									heart.getLockQRSWave().lock();
+									m_icd.setQRSFlag(true);
+								} finally {
+									heart.getLockQRSWave().unlock();
+								}
+
 								continue lookForP;
 							}
 
 						}
 
 						if(!heart.getQRSWave()){
-							m_icd.setQRSFlag(false);
 							System.out.println("QRS wave not detected");
+							try{
+								heart.getLockQRSWave().lock();
+								m_icd.setQRSFlag(false);
+							} finally {
+								heart.getLockQRSWave().unlock();
+							}
+
 							continue lookForP;
 						}
 
 					}
 
 				}
-
-
 			}
 	}
 

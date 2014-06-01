@@ -47,14 +47,44 @@ public class HeartbeatThread extends Thread {
 				e.printStackTrace();
 			}
 
-			//P wave
-			//			System.out.println("start P");
 
+			//randomize the heartrate
+			if(random.nextFloat()<m_chance){
+				if(random.nextFloat()<0.5){
+					try{
+						m_heart.getLockHeartRate().lock();
+						m_heart.setHeartrate(m_heart.getHeartrate() + 5);
+					} finally{
+						m_heart.getLockHeartRate().unlock();
+					}
+				}
+				else
+					try{
+						m_heart.getLockHeartRate().lock();
+						m_heart.setHeartrate(m_heart.getHeartrate() - 5);
+					} finally{
+						m_heart.getLockHeartRate().unlock();
+					}
+			}
 			//chance or cardiac arrest
 
-			if(random.nextFloat() < 0.3){
+			if(random.nextFloat() < 0.1){
 				System.out.println("Ventricular Fibrillation ");
-				m_heart.setFib(true);
+				try{
+					m_heart.getLockVentricFib().lock();
+					m_heart.setFib(true);
+				} finally {
+					m_heart.getLockVentricFib().unlock();
+				}
+				
+				try{
+					m_heart.getLockHeartRate().lock();
+					m_heart.setHeartrate(0);
+				} finally {
+					m_heart.getLockHeartRate().unlock();
+				}
+			
+				
 				while(true){
 					try {
 						Thread.sleep(1);
@@ -77,7 +107,9 @@ public class HeartbeatThread extends Thread {
 
 				e.printStackTrace();
 			}
+
 			m_heart.setPWave(false);
+
 			//			System.out.println("end P");
 
 			try {

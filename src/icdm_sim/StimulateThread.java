@@ -6,9 +6,11 @@ public class StimulateThread extends Thread {
 	private String DEAD = "dead";
 	private String FAST = "fast";
 	private String SLOW = "slow";
+	private Heart m_heart;
 
 	public StimulateThread (ICD icd) {
 		m_icd = icd;
+		m_heart = m_icd.getHeart();
 	}
 
 	public void run() {
@@ -25,16 +27,20 @@ public class StimulateThread extends Thread {
 				e.printStackTrace();
 			}
 
+			//send pacing signal
 			if(!m_icd.getQRSFlag()){
 				System.out.println("Ventricle pacing signal sent");
+				
+				try{
+				m_heart.getLockQRSWave().lock();
 				m_icd.setQRSFlag(true);
+				} finally {
+					m_heart.getLockQRSWave().unlock();
+				}
 			}
 
-			if(!m_icd.getPFlag()){
-				System.out.println("Atrium pacing signal sent");
-				m_icd.setPFlag(true);
-			}
 
+			//defibrillate heart
 			if(m_icd.getHeart().getFib()){
 				System.out.println("Preparing to defibrillate...");
 				System.out.println("Charging....");
@@ -45,8 +51,44 @@ public class StimulateThread extends Thread {
 					e.printStackTrace();
 				}
 				System.out.println("Discharge");
+				try{
+				m_heart.getLockVentricFib().lock();				
 				m_icd.getHeart().setFib(false);
+				} finally {
+					m_heart.getLockVentricFib().unlock();
+				}
+				
+				try{
+					m_heart.getLockHeartRate().lock();
+					m_heart.setHeartrate(80);
+				} finally {
+					m_heart.getLockHeartRate().unlock();
+				}
 
+			}
+
+			if(m_icd.getSlow()){
+				System.out.println("Bradycardia detected, heart pacing signal sent");
+				m_icd.setSlowFlag(false);
+				try{
+					m_heart.getLockHeartRate().lock();
+					m_heart.setHeartrate(80);
+				} finally {
+					m_heart.getLockHeartRate().unlock();
+				}
+
+			}
+
+			if(m_icd.getFast()){
+				System.out.println("Tachycardia detected, heart pacing signal sent");
+
+				m_icd.setFastFlag(false);
+				try{
+					m_heart.getLockHeartRate().lock();
+					m_heart.setHeartrate(80);
+				} finally {
+					m_heart.getLockHeartRate().unlock();
+				}
 			}
 		}
 	}
