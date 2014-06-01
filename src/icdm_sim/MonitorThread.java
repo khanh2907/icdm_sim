@@ -22,7 +22,17 @@ public class MonitorThread extends Thread {
 				} catch (InterruptedException e){
 					e.printStackTrace();
 				}
-				System.out.println(heartrate);
+
+				if(heart.isDead()){
+
+					System.out.println("Patient is dead");
+					m_icd.setDead(true);
+					continue lookForP;
+
+				}
+
+
+				System.out.println("Heart rate is: " + heartrate);
 				if(heartrate<60){
 					System.out.println("Bradycardia");
 					m_icd.setSlowFlag(true);

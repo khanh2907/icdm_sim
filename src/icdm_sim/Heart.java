@@ -20,6 +20,7 @@ public class Heart{
 	public boolean m_pWave;
 	public boolean m_qrsWave;
 	public boolean m_isVentricularFibrillation;
+	public boolean m_isDead;
 
 	private float m_heartrate;
 
@@ -33,6 +34,7 @@ public class Heart{
 		lockQRSWave = new ReentrantLock();
 		lockVentricFib = new ReentrantLock();
 		
+		m_isDead = false;		
 		m_pWave = false;
 		m_qrsWave = false;
 
@@ -101,5 +103,13 @@ public class Heart{
 	
 	public Lock getLockVentricFib(){
 		return lockVentricFib;
+	}
+	
+	public boolean isDead(){
+		return m_isDead;
+	}
+	
+	public void setDead(boolean state){
+		m_isDead = state;
 	}
 }

@@ -37,8 +37,9 @@ public class HeartbeatThread extends Thread {
 
 	public void run() {
 		System.out.println(m_chance);
+		Heartbeat:
 		while(true){
-
+			
 			//delay to set the heartrate 
 			try {
 				Thread.sleep((long)((1/(m_heart.getHeartrate()/60)*1000))-(200));
@@ -68,7 +69,7 @@ public class HeartbeatThread extends Thread {
 			}
 			//chance or cardiac arrest
 
-			if(random.nextFloat() < 0.1){
+			if(random.nextFloat() < 0.3){
 				System.out.println("Ventricular Fibrillation ");
 				try{
 					m_heart.getLockVentricFib().lock();
@@ -84,8 +85,8 @@ public class HeartbeatThread extends Thread {
 					m_heart.getLockHeartRate().unlock();
 				}
 			
-				
-				while(true){
+				long startTime = System.currentTimeMillis();
+				while(System.currentTimeMillis() - startTime < 10000){
 					try {
 						Thread.sleep(1);
 					} catch (InterruptedException e) {
@@ -94,9 +95,13 @@ public class HeartbeatThread extends Thread {
 					}
 					if(m_heart.getFib() == false){
 
-						break;
+						continue Heartbeat;
 					}
-				}					
+				}	
+				
+				System.out.println("Dead!");
+				m_heart.setDead(true);
+				return;
 			}
 
 			m_heart.setPWave(true);

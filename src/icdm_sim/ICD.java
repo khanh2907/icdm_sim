@@ -106,5 +106,13 @@ public class ICD {
 	public boolean getFast(){
 		return m_fast;
 	}
+	
+	public void setDead(boolean state){
+		m_dead = state;
+	}
+	
+	public boolean isDead(){
+		return m_dead;
+	}
 
 }
