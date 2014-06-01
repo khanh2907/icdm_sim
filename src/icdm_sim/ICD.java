@@ -20,7 +20,7 @@ public class ICD {
 		m_patientId = heart.getPatientId();
 
 		m_monitorThread = new MonitorThread(this);
-		m_sendThread = new SendThread(this, "http://130.56.248.71/elec5614/icdm/web/post/heartrate/");
+		m_sendThread = new SendThread(this, "http://130.56.248.71/elec5614/post/heartrate/");
 		m_stimulateThread = new StimulateThread(this);
 
 
@@ -28,7 +28,7 @@ public class ICD {
 		m_monitorThread.start();
 		m_stimulateThread.start();
 
-		//		m_sendThread.start();
+		m_sendThread.start();
 
 
 	}
