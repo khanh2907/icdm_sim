@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="icdm-build" default="jar" basedir=".">
+
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="build.classes.dir" value="${build.dir}/classes" />
+	<property name="build.jar.dir" value="${build.dir}/jar" />
+	
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${build.classes.dir}"/>
+	    <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" source="1.8" includeantruntime="false">
+	    	<classpath refid="build.classpath" />
+    	</javac>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="${build.jar.dir}" />
+		<jar destfile="${build.jar.dir}/icdm.jar" basedir="${build.classes.dir}" />
+	</target>
+		
+</project>	

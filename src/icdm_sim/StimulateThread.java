@@ -93,6 +93,7 @@ public class StimulateThread extends Thread {
 				}
 				else 
 					System.out.println("Defibrillation failed");
+				updateJob(defJobId, "FAILED", "Defibrillation failed.", "true");
 			
 			}
 

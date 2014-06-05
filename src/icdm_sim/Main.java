@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		
-		Heart heart = new Heart(2, 60, 29, 9, true, true, true);
+		Heart heart = new Heart(3, 20, 20, 1, false, false, false);
 		
 		ICD icd = new ICD(heart);
 				
